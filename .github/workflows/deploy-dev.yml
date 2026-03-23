@@ -51,12 +51,23 @@ jobs:
           cp -r apps/web-admin/dist/* .deploy/web/
           tar czf deploy.tgz -C .deploy .
 
+      - name: prepare SSH key file
+        run: |
+          mkdir -p .ci
+          if [ -n "${{ secrets.ECS_SSH_KEY_BASE64 }}" ]; then
+            echo "${{ secrets.ECS_SSH_KEY_BASE64 }}" | base64 -d > .ci/ecs_key
+          else
+            # 兼容旧配置：仍可使用 ECS_SSH_KEY（多行私钥原文）
+            printf "%s" "${{ secrets.ECS_SSH_KEY }}" > .ci/ecs_key
+          fi
+          chmod 600 .ci/ecs_key
+
       - name: upload package to ECS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.ECS_HOST }}
           username: ${{ secrets.ECS_USERNAME }}
-          key: ${{ secrets.ECS_SSH_KEY }}
+          key_path: .ci/ecs_key
           source: deploy.tgz
           target: /tmp
           strip_components: 0
@@ -66,7 +77,7 @@ jobs:
         with:
           host: ${{ secrets.ECS_HOST }}
           username: ${{ secrets.ECS_USERNAME }}
-          key: ${{ secrets.ECS_SSH_KEY }}
+          key_path: .ci/ecs_key
           script: |
             set -e
 
