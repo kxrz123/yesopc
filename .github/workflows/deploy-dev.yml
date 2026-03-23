@@ -1,0 +1,106 @@
+name: deploy-yesopc-dev
+
+on:
+  push:
+    branches: ["dev"]
+  workflow_dispatch: {}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      # ECS 部署目录：如你的服务器目录和默认值不一致，可以在 GitHub Secrets 里覆盖
+      API_DIR: ${{ secrets.DEPLOY_API_DIR || '/opt/yesopc.com/services/content-api' }}
+      WEB_DIR: ${{ secrets.DEPLOY_WEB_DIR || '/var/www/yesopc.com/web-admin' }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: build content-api (Go)
+        run: |
+          cd services/content-api
+          go mod download
+          go build -o content-api .
+
+      - name: build web-admin (Vite)
+        run: |
+          cd apps/web-admin
+          npm ci
+          # 让 web-admin 同源访问 /api/*（由 nginx 反代到 content-api），因此 VITE_API_BASE 保持空
+          VITE_API_BASE= npm run build
+
+      - name: package artifacts
+        run: |
+          rm -rf .deploy
+          mkdir -p .deploy/api .deploy/web
+          cp services/content-api/content-api .deploy/api/
+          cp services/content-api/etc/content-api.yaml .deploy/api/
+          cp -r apps/web-admin/dist/* .deploy/web/
+          tar czf deploy.tgz -C .deploy .
+
+      - name: upload package to ECS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USERNAME }}
+          key: ${{ secrets.ECS_SSH_KEY }}
+          source: deploy.tgz
+          target: /tmp
+          strip_components: 0
+
+      - name: deploy on ECS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USERNAME }}
+          key: ${{ secrets.ECS_SSH_KEY }}
+          script: |
+            set -e
+
+            API_DIR="${API_DIR}"
+            WEB_DIR="${WEB_DIR}"
+
+            DEPLOY_DIR="/tmp/yesopc-deploy"
+            rm -rf "$DEPLOY_DIR"
+            mkdir -p "$DEPLOY_DIR"
+            tar xzf /tmp/deploy.tgz -C "$DEPLOY_DIR"
+
+            # 1) 替换 content-api 二进制 & 非敏感配置
+            mkdir -p "$API_DIR/etc"
+            install -m 0755 "$DEPLOY_DIR/api/content-api" "$API_DIR/content-api"
+            install -m 0644 "$DEPLOY_DIR/api/content-api.yaml" "$API_DIR/etc/content-api.yaml"
+
+            # 2) 替换 web-admin 静态站点
+            mkdir -p "$WEB_DIR"
+            rm -rf "${WEB_DIR:?}/"*
+            cp -r "$DEPLOY_DIR/web/"* "$WEB_DIR/"
+
+            # 3) systemd 重启后端
+            if systemctl list-units --type=service | grep -q '^content-api\.service'; then
+              sudo systemctl restart content-api.service
+            else
+              sudo systemctl restart content-api || true
+            fi
+
+            # 4) nginx reload（若存在）
+            sudo systemctl reload nginx || true
+
+            # 5) 简单健康检查（curl 不一定存在时自动跳过）
+            if command -v curl >/dev/null 2>&1; then
+              curl -fsS http://127.0.0.1:8888/api/v1/health >/dev/null || exit 1
+            fi
+
+            rm -f /tmp/deploy.tgz
+
