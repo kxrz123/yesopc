@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # ECS 部署目录：如你的服务器目录和默认值不一致，可以在 GitHub Secrets 里覆盖
-      API_DIR: ${{ secrets.DEPLOY_API_DIR || '/opt/yesopc.com/services/content-api' }}
-      WEB_DIR: ${{ secrets.DEPLOY_WEB_DIR || '/var/www/yesopc.com/web-admin' }}
+      # 默认 ECS 部署目录（如需改目录，可直接改这里）
+      API_DIR: /opt/yesopc.com/services/content-api
+      WEB_DIR: /var/www/yesopc.com/web-admin
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.22"
           cache-dependency-path: services/content-api/go.sum
 
       - name: setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "20"
 
