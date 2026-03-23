@@ -60,7 +60,8 @@ jobs:
             # 兼容旧配置：仍可使用 ECS_SSH_KEY（多行私钥原文）
             printf "%s" "${{ secrets.ECS_SSH_KEY }}" > .ci/ecs_key
           fi
-          chmod 600 .ci/ecs_key
+          # docker-based action reads this file inside container; use readable mode to avoid permission denied
+          chmod 644 .ci/ecs_key
 
       - name: upload package to ECS
         uses: appleboy/scp-action@v0.1.7
