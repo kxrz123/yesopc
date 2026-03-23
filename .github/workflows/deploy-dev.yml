@@ -82,8 +82,8 @@ jobs:
           script: |
             set -e
 
-            API_DIR="${API_DIR}"
-            WEB_DIR="${WEB_DIR}"
+            API_DIR="/opt/yesopc.com/services/content-api"
+            WEB_DIR="/var/www/yesopc.com/web-admin"
 
             DEPLOY_DIR="/tmp/yesopc-deploy"
             rm -rf "$DEPLOY_DIR"
