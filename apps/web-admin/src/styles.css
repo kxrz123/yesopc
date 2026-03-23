@@ -1,0 +1,801 @@
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
+    -system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background-color: #f3f4f6;
+  /* 隐藏页面级滚动条；容器滚动由内部 overflow 决定 */
+  overflow: hidden;
+}
+
+/* 隐藏所有可见滚动条（不禁止滚动，用于彻底消除你看到的“下拉/整页滚动条”） */
+* {
+  scrollbar-width: none; /* Firefox */
+}
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* 兜底：对常见滚动容器单独隐藏，避免某些组件/浏览器实现下全局 * 规则没覆盖 */
+.admin-content::-webkit-scrollbar,
+.admin-sidebar::-webkit-scrollbar,
+.note-list::-webkit-scrollbar,
+.notification-list::-webkit-scrollbar,
+.article-editor::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+.admin-content::-webkit-scrollbar-thumb,
+.admin-sidebar::-webkit-scrollbar-thumb,
+.note-list::-webkit-scrollbar-thumb,
+.notification-list::-webkit-scrollbar-thumb,
+.article-editor::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+
+.admin-page {
+  display: grid;
+  grid-template-columns: 56px 340px 1fr;
+  height: 100vh;
+  background: #f7f8fa;
+}
+
+/* 让主列在 grid 里能按高度参与 flex/overflow 计算，避免子项 min-height:auto 撑破布局 */
+.admin-page > main {
+  min-height: 0;
+}
+
+.admin-rail {
+  border-right: 1px solid #e5e6eb;
+  background: #f6f7f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.rail-top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rail-btn {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7785;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.rail-btn:hover {
+  background: #e9edf3;
+}
+
+.rail-btn-active {
+  background: #e9edf3;
+  color: #1d2129;
+}
+
+.rail-bottom {
+  margin-bottom: 4px;
+}
+
+.rail-avatar-anchor {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rail-avatar-menu .arco-menu-inner {
+  padding: 6px;
+  background: #f3f4f6;
+}
+
+.rail-avatar-menu .arco-menu-item {
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1d2129;
+}
+
+.rail-avatar-menu {
+  max-height: none;
+  overflow: visible;
+  background: #f3f4f6;
+}
+
+.rail-menu-title-with-arrow {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-sidebar {
+  border-right: 1px solid #e5e6eb;
+  background: #fff;
+  padding: 10px;
+  overflow: auto;
+}
+
+.sidebar-search {
+  margin-bottom: 10px;
+}
+
+.sidebar-calendar-wrap {
+  border: 1px solid #eef0f4;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: #fff;
+  min-height: 280px;
+}
+
+.sidebar-calendar-header {
+  font-size: 12px;
+  color: #4e5969;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.admin-mini-calendar {
+  border: 0;
+  width: 100%;
+}
+
+.admin-mini-calendar .arco-calendar-header {
+  padding: 6px 8px;
+}
+
+.admin-mini-calendar .arco-calendar-header-value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-body,
+.admin-mini-calendar .arco-calendar-body {
+  padding: 8px;
+}
+
+/* 星期表头：单行、居中、不裁切 */
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list,
+.admin-mini-calendar .arco-calendar-week-list {
+  display: flex;
+  min-height: 28px;
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item,
+.admin-mini-calendar .arco-calendar-week-list-item {
+  font-size: 0;
+  height: 28px;
+  line-height: 28px;
+  padding: 0;
+  color: #86909c;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* 星期表头文案从“周日”改为“日” */
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item::after,
+.admin-mini-calendar .arco-calendar-week-list-item::after {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  color: #86909c;
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(1)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(1)::after {
+  content: '日';
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(2)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(2)::after {
+  content: '一';
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(3)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(3)::after {
+  content: '二';
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(4)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(4)::after {
+  content: '三';
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(5)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(5)::after {
+  content: '四';
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(6)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(6)::after {
+  content: '五';
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-week-list-item:nth-child(7)::after,
+.admin-mini-calendar .arco-calendar-week-list-item:nth-child(7)::after {
+  content: '六';
+}
+
+/* “今天 / 月 / 年”字体调小 */
+.admin-mini-calendar .arco-calendar-header button,
+.admin-mini-calendar .arco-calendar-header .arco-btn,
+.admin-mini-calendar .arco-calendar-header .arco-radio-button {
+  font-size: 12px;
+}
+
+/* 隐藏“今天”后面的模式切换（如“月/年”） */
+.admin-mini-calendar .arco-calendar-header .arco-radio-group {
+  display: none;
+}
+
+/* 去掉日历表格线：无边框 */
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell,
+.admin-mini-calendar .arco-calendar-cell,
+.admin-mini-calendar .arco-calendar-month-row .arco-calendar-cell {
+  border: none !important;
+  border-bottom: none !important;
+  border-right: none !important;
+}
+.admin-mini-calendar .arco-calendar-week-list {
+  border-bottom: none !important;
+}
+.admin-mini-calendar .arco-calendar-panel {
+  border: none !important;
+}
+
+/* 日期格子：无背景，数字直接衬在底色上 */
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell,
+.admin-mini-calendar .arco-calendar-cell {
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
+  background: transparent !important;
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell .arco-calendar-date,
+.admin-mini-calendar .arco-calendar-cell .arco-calendar-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 18px;
+  padding: 0;
+  background: transparent !important;
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell .arco-calendar-date-value,
+.admin-mini-calendar .arco-calendar-cell .arco-calendar-date-value {
+  font-size: 13px;
+  color: #4e5969;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+}
+/* 仅普通日期无背景，选中/今天保留组件默认样式 */
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell:not(.arco-calendar-cell-selected):not(.arco-calendar-cell-today) .arco-calendar-date-value,
+.admin-mini-calendar .arco-calendar-cell:not(.arco-calendar-cell-selected):not(.arco-calendar-cell-today) .arco-calendar-date-value {
+  background: transparent !important;
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell .arco-calendar-date-circle,
+.admin-mini-calendar .arco-calendar-cell .arco-calendar-date-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  line-height: 1;
+}
+
+/* NotesCalendar: 给有 notes 的日期做“选中态”背景，并在日期上方 hover 时显示气泡提示 */
+.notes-calendar-day {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notes-calendar-day.no-notes {
+  background: transparent !important;
+  color: #4e5969 !important;
+  font-weight: 600 !important;
+}
+
+.notes-calendar-day.has-notes {
+  background: rgba(22, 93, 255, 0.18) !important;
+  color: rgb(var(--primary-6, 22 93 255)) !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(22, 93, 255, 0.18) !important;
+  box-sizing: border-box;
+}
+
+.notes-calendar-day.has-notes.selected {
+  background: rgb(var(--primary-6, 22 93 255)) !important;
+  color: #fff !important;
+  border: 2px solid rgb(var(--primary-6, 22 93 255)) !important;
+}
+
+.notes-calendar-day-tooltip {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: -28px;
+  transform: translateX(-50%);
+  background: rgb(var(--primary-6, 22 93 255)) !important;
+  color: #fff !important;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+/* Arco Calendar 容器可能默认 overflow hidden，导致我们放在格子上方的 tooltip 被裁切 */
+.admin-mini-calendar .arco-calendar-panel,
+.admin-mini-calendar .arco-calendar-body,
+.admin-mini-calendar .arco-calendar-cell {
+  overflow: visible !important;
+}
+
+.notes-calendar-day.has-notes:hover .notes-calendar-day-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 仅非选中、非今天时去掉圆形背景，选中/今天保留蓝底白字 */
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-cell:not(.arco-calendar-cell-selected):not(.arco-calendar-cell-today) .arco-calendar-date-circle,
+.admin-mini-calendar .arco-calendar-cell:not(.arco-calendar-cell-selected):not(.arco-calendar-cell-today) .arco-calendar-date-circle {
+  background: transparent !important;
+}
+.admin-mini-calendar .arco-calendar-cell-selected .arco-calendar-date-value,
+.admin-mini-calendar .arco-calendar-cell-selected .arco-calendar-date-circle {
+  color: #fff !important;
+  background-color: rgb(var(--primary-6, 22 93 255)) !important;
+}
+.admin-mini-calendar .arco-calendar-panel .arco-calendar-month-row,
+.admin-mini-calendar .arco-calendar-month-row {
+  height: 40px !important;
+  min-height: 40px;
+}
+
+.sidebar-label-block {
+  margin-top: 6px;
+}
+
+.sidebar-label-title {
+  font-size: 12px;
+  color: #4e5969;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.sidebar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-content {
+  padding: 20px 32px;
+  overflow: auto;
+  box-sizing: border-box;
+  /* 在第三列内水平居中，避免内容贴左、右侧大块留白 */
+  max-width: 720px;
+  width: min(100%, 720px);
+  margin-left: auto;
+  margin-right: auto;
+  justify-self: center;
+  min-width: 0;
+}
+
+/* 动态/文章：主列内「输入卡片 + 列表」纵向 flex，避免 empty-wrap 再用 100vh 叠出整页滚动条 */
+.admin-content-feed {
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.composer-card {
+  border-radius: 8px;
+  border-color: #eceef3;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.admin-content-feed > .composer-card {
+  flex-shrink: 0;
+}
+
+.composer-card .arco-card-body {
+  padding: 12px 12px;
+}
+
+.composer-textarea textarea {
+  font-size: 12px;
+  line-height: 1.5;
+  /* 防止在受控 value 下边框丢失：强制补齐可见边框 */
+  border: 1px solid #e5e6eb !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  background: #fff !important;
+}
+
+.composer-textarea textarea:focus {
+  border-color: rgb(var(--primary-6, 22 93 255)) !important;
+  box-shadow: none !important;
+}
+
+.composer-actions {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selected-date-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* 当日期标签从 composer-card 内挪到外面时，避免和卡片边距打架 */
+.selected-date-row-between {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.selected-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #e5e6eb;
+  background: #fff;
+  color: #4e5969;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.selected-date-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+}
+
+.selected-date-pill-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.selected-date-pill-close {
+  border: 0;
+  background: transparent;
+  color: #6b7785;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+}
+
+.selected-date-pill-close:hover {
+  color: rgb(var(--primary-6, 22 93 255));
+}
+
+.note-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.articles-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1d2129;
+  padding: 2px 2px 0;
+}
+
+.articles-section-empty {
+  font-size: 12px;
+  color: #9aa3af;
+  padding: 8px 2px;
+}
+
+.articles-pagination-wrap {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-content-feed > .note-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.note-card {
+  border-radius: 10px;
+  border-color: #e7e9ee;
+}
+
+.note-card .arco-card-body {
+  padding: 12px 14px;
+}
+
+.note-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.note-time {
+  font-size: 13px;
+  color: #6b7785;
+}
+
+.note-more {
+  color: #6b7785;
+  padding: 0;
+}
+
+.note-body {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1d2129;
+}
+
+.article-thumb-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  min-height: 44px;
+}
+
+.article-title-line {
+  margin-bottom: 6px;
+}
+
+.article-thumb-content-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.article-snippet {
+  min-width: 0;
+  flex: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-card-top {
+  display: flex;
+  align-items: stretch; /* 关键：让图片高度跟随「标题+简介」总高度 */
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.article-right {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-title {
+  font-weight: 600;
+  min-width: 0;
+  color: #1d2129;
+  margin-bottom: 6px; /* 让标题单独一行 */
+}
+
+.article-thumb {
+  width: 92px !important;
+  max-width: 92px !important;
+  object-fit: cover !important;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #f0f2f5;
+  display: block;
+  /* 用 flex 的 stretch 自动撑满高度，避免 height: 100% 在 auto 高度容器下失效 */
+  align-self: stretch;
+}
+
+.add-button-anchor {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-dropdown-menu .arco-menu-inner {
+  padding: 8px 0;
+  background: #f3f4f6;
+}
+
+.add-dropdown-menu .arco-menu-item {
+  background: transparent;
+}
+
+/* Arco Dropdown 的真实背景在 .arco-dropdown-menu 外层 */
+.add-dropdown-menu.arco-dropdown-menu,
+.add-dropdown-menu {
+  background-color: #f3f4f6 !important;
+}
+
+.add-dropdown-menu .arco-dropdown-menu-item,
+.add-dropdown-menu .arco-dropdown-menu-pop-header {
+  background-color: transparent !important;
+}
+
+.add-menu-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-menu-row-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-menu-row-right {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.add-menu-shortcut {
+  color: #6b7785 !important;
+}
+
+.article-editor .ql-editor {
+  min-height: 320px;
+}
+
+/* 防止非全屏 Modal 下 Quill 区域意外塌陷/不显示 */
+.arco-modal .article-editor .ql-toolbar,
+.arco-modal .article-editor .ql-container,
+.arco-modal .article-editor .ql-editor {
+  display: block !important;
+}
+
+.arco-modal .article-editor .ql-container {
+  min-height: 260px !important;
+}
+
+.article-title-input {
+  margin-bottom: 12px;
+}
+
+.article-draft-btn {
+}
+
+.article-modal-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  position: relative;
+}
+
+.article-modal-fullscreen-btn {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  right: auto;
+}
+
+.article-modal-fullscreen .arco-modal {
+  width: 100vw !important;
+  height: 100vh !important;
+  top: 0 !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.article-modal-fullscreen .arco-modal-header {
+  height: 48px;
+}
+
+.article-modal-fullscreen .arco-modal-content {
+  padding: 16px 20px;
+  max-height: none !important;
+  overflow: auto !important;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 全屏下避免 Quill 因高度约束塌陷：用 flex 撑满 + 设置最小高度 */
+.article-modal-fullscreen .article-editor {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-modal-fullscreen .article-editor .quill {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0 !important;
+}
+
+.article-modal-fullscreen .article-editor .ql-toolbar {
+  flex-shrink: 0;
+}
+
+.article-modal-fullscreen .article-editor .ql-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+}
+
+.article-modal-fullscreen .article-editor .ql-editor {
+  min-height: calc(100vh - 260px) !important;
+}
+
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9aa3af;
+}
+
+.admin-content-feed > .empty-wrap {
+  flex: 1;
+  min-height: 0;
+  margin-top: 12px;
+}
+
+.empty-icon {
+  font-size: 30px;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.empty-text {
+  font-size: 12px;
+}

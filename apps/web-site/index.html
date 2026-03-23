@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YesOPC - 一人公司孵化器 | 赋能超级个体</title>
+    <meta name="description" content="YesOPC 是一人公司孵化器，致力于帮助超级个体从零到一构建闭环商业帝国，提供注册合规、财税规划、技术支持与品牌营销全方位服务。">
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <script type="module" src="/src/main.tsx"></script>
+</head>
+
+<body>
+    <header class="navbar" id="navbar">
+        <div class="container nav-content">
+            <a href="#" class="logo">
+                <img src="/logo/logo14.jpg" alt="YesOPC Logo">
+                <span>YesOPC</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#home">首页</a>
+                <a href="#about">关于我们</a>
+                <a href="#services">孵化服务</a>
+                <a href="#success">成功案例</a>
+            </nav>
+            <a href="http://127.0.0.1:5175/login" class="btn btn-primary nav-btn">立即入驻</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-bg">
+                <div class="gradient-sphere sphere-1"></div>
+                <div class="gradient-sphere sphere-2"></div>
+            </div>
+            <div class="container hero-content">
+                <div class="hero-badge">🚀 开启你的超级个体之路</div>
+                <h1 class="hero-title">
+                    YesOPC <br>
+                    <span class="gradient-text">一人公司孵化器</span>
+                </h1>
+                <p class="hero-subtitle">
+                    打破传统雇佣模式，赋能超级个体。<br>从灵感到变现，为您提供全方位的商业闭环支持，让一人公司也能创造巨大势能。
+                </p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn btn-primary btn-lg">开始你的旅程 <svg width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg></a>
+                    <a href="#services" class="btn btn-secondary btn-lg">探索服务</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats section-padding">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 class="stat-number">500+</h3>
+                        <p class="stat-label">成功孵化项目</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-number">￥10M+</h3>
+                        <p class="stat-label">累计创造营收</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-number">100%</h3>
+                        <p class="stat-label">合规保障率</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="stat-number">24/7</h3>
+                        <p class="stat-label">全方位技术支持</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="services section-padding bg-light">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title">全链路孵化支持</h2>
+                    <p class="section-desc">一个人就是一支队伍，但你不必孤军奋战。我们提供企业级的基础设施。</p>
+                </div>
+
+                <div class="services-grid">
+                    <div class="service-card appear-on-scroll">
+                        <div class="service-icon">📝</div>
+                        <h3 class="service-title">公司注册与合规</h3>
+                        <p class="service-desc">快速搞定个体户或独资企业注册，提供政策咨询、特许资质办理，让您起步即合规，无后顾之忧。</p>
+                    </div>
+
+                    <div class="service-card appear-on-scroll" style="transition-delay: 0.1s">
+                        <div class="service-icon">💰</div>
+                        <h3 class="service-title">专业财税规划</h3>
+                        <p class="service-desc">专为一人公司定制的税务筹划方案，对接园区优惠政策，合法合规降低运营成本。</p>
+                    </div>
+
+                    <div class="service-card appear-on-scroll" style="transition-delay: 0.2s">
+                        <div class="service-icon">💻</div>
+                        <h3 class="service-title">研发与技术赋能</h3>
+                        <p class="service-desc">提供建站、小程序开发、全套AI自动化工具链，一个人也能拥有顶级科技互联网公司的技术实力。</p>
+                    </div>
+
+                    <div class="service-card appear-on-scroll" style="transition-delay: 0.3s">
+                        <div class="service-icon">🚀</div>
+                        <h3 class="service-title">品牌与增长营销</h3>
+                        <p class="service-desc">个人IP打造、自媒体矩阵运营指导，打通公域引流与私域变现闭环，实现爆炸式自然增长。</p>
+                    </div>
+
+                    <div class="service-card appear-on-scroll" style="transition-delay: 0.4s">
+                        <div class="service-icon">⚡️</div>
+                        <h3 class="service-title">算力与云服务支持</h3>
+                        <p class="service-desc">对接顶级 GPU 算力池与云端大模型接口，提供高优推理额度与部署指导，让 AI 创新不再受限于硬件瓶颈。</p>
+                    </div>
+
+                    <div class="service-card appear-on-scroll" style="transition-delay: 0.5s">
+                        <div class="service-icon">🤝</div>
+                        <h3 class="service-title">优质社群与资源圈层</h3>
+                        <p class="service-desc">汇聚顶尖创始人、行业大牛与投资人。定期举办高端闭门沙龙与资源对接会，为一人公司注入无限杠杆。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section id="contact" class="cta section-padding">
+            <div class="container cta-container">
+                <div class="cta-content">
+                    <h2 class="cta-title">准备好成为下一个超级个体了吗？</h2>
+                    <p class="cta-desc">现在加入 YesOPC，领取您的一人公司启动大礼包，开启财富自由之路。</p>
+                </div>
+                <div class="cta-action">
+                    <form class="cta-form" onsubmit="event.preventDefault(); alert('提交成功！我们将尽快与您联系。');">
+                        <input type="email" placeholder="输入您的邮箱..." required class="form-input">
+                        <button type="submit" class="btn btn-primary btn-lg">免费获取方案</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span>YesOPC</span>
+                </div>
+                <p class="footer-desc">一人公司领域的布道者与赋能者。致力于帮助更多人实现工作与生活的平衡，创造真正属于自己的商业价值。</p>
+            </div>
+            <div class="footer-links">
+                <div class="links-column">
+                    <h4>平台</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">服务项目</a>
+                    <a href="#">收费标准</a>
+                </div>
+                <div class="links-column">
+                    <h4>资源</h4>
+                    <a href="#">知识库</a>
+                    <a href="#">成功案例</a>
+                    <a href="#">创业工具箱</a>
+                </div>
+                <div class="links-column">
+                    <h4>联系我们</h4>
+                    <a href="#">商务合作</a>
+                    <a href="#">加入社群</a>
+                    <a href="#">意见反馈</a>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 YesOPC. All rights reserved. 赋能每一个闪光的个体。</p>
+        </div>
+    </footer>
+    <script src="/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+Name: content-api
+Host: 0.0.0.0
+Port: 8888
+Mode: dev
+Timeout: 30000
+MaxBytes: 10485760
+
+# DATABASE_URL、DEFAULT_NOTES_USER_ID、CORS_ALLOW_ORIGIN 见 .env.example，通过环境变量注入
+

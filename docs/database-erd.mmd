@@ -1,0 +1,115 @@
+%% YesOPC 数据库 ER 图（Mermaid）
+%% 与 docs/database-design.md 中 erDiagram 保持一致；可用 mermaid-cli 导出 PNG/SVG
+
+erDiagram
+  users ||--o{ sessions : has
+  users ||--o{ notes : owns
+  users ||--o{ articles : owns
+  users ||--o{ article_reads : reads
+  users ||--o{ notifications : receives
+  users ||--o{ notification_user_state : has
+  notifications ||--o{ notification_user_state : states
+  users ||--o{ files : uploads
+
+  tags ||--o{ note_tags : used_in
+  notes ||--o{ note_tags : tagged
+  notes ||--o{ note_attachments : has
+  files ||--o{ note_attachments : referenced
+
+  articles ||--o{ article_reads : counted_by
+  articles ||--o{ article_attachments : has
+  files ||--o{ article_attachments : referenced
+
+  users {
+    uuid id PK
+    string username UK
+    string email
+    string password_hash
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  sessions {
+    uuid id PK
+    uuid user_id FK
+    string token_hash
+    timestamptz expires_at
+  }
+
+  notes {
+    uuid id PK
+    uuid user_id FK
+    text content_text
+    string visibility
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  tags {
+    uuid id PK
+    uuid user_id FK
+    string name
+  }
+
+  note_tags {
+    uuid note_id FK
+    uuid tag_id FK
+  }
+
+  articles {
+    uuid id PK
+    uuid user_id FK
+    string title
+    text body_html
+    string status
+    timestamptz published_at
+    bigint read_count
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  article_reads {
+    uuid id PK
+    uuid article_id FK
+    uuid user_id FK
+    date read_date
+    timestamptz created_at
+  }
+
+  notifications {
+    uuid id PK
+    uuid user_id FK
+    string type
+    string title
+    text body
+    timestamptz created_at
+  }
+
+  notification_user_state {
+    uuid notification_id FK
+    uuid user_id FK
+    timestamptz read_at
+    timestamptz archived_at
+  }
+
+  files {
+    uuid id PK
+    uuid user_id FK
+    string storage_key
+    string original_name
+    string mime
+    bigint size_bytes
+    timestamptz created_at
+  }
+
+  article_attachments {
+    uuid article_id FK
+    uuid file_id FK
+    int sort_order
+  }
+
+  note_attachments {
+    uuid note_id FK
+    uuid file_id FK
+    int sort_order
+  }

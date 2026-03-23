@@ -1,0 +1,27 @@
+# Local/editor
+.DS_Store
+.vscode/
+.cursor/
+.specstory/
+
+# Node / React
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Flutter / Dart
+**/.dart_tool/
+**/.flutter-plugins/
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/build/
+
+# Env / secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Logs
+*.log
+
